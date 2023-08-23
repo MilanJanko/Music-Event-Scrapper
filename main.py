@@ -16,12 +16,31 @@ def scrape(url):
 
 
 def extract(source):
+    """ Extract CSS selector from scrapped web page"""
     extractor = selectorlib.Extractor.from_yaml_file("extract.yaml")
     value = extractor.extract(source)['tours']
     return value
+
+
+def send_email():
+    print("Email was sent!")
+
+
+def save (extracted):
+    with open('data.txt', 'a') as file:
+        file.write(extracted + '\n')
+
+def read (extracted):
+    with open('data.txt', 'r') as file:
+        return file.read()
 
 
 if __name__ == '__main__':
     scrapped = scrape(url)
     extracted = extract(scrapped)
     print(extracted)
+    content = read(extracted)
+    if extracted != 'No upcoming tours!':
+        if extracted not in content:
+            save(extracted)
+            send_email()
